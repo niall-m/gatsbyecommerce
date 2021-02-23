@@ -1,8 +1,12 @@
+// /* eslint-disable jsx-a11y/no-onchange */
+
 import React from 'react';
 import { graphql } from 'gatsby';
 import { Layout, ImageGallery } from 'components';
 import { Grid, SelectWrapper, Price } from './styles';
 import CartContext from 'context/CartContext';
+import { navigate, useLocation } from '@reach/router';
+import queryString from 'query-string';
 
 export const query = graphql`
   query ProductQuery($shopifyId: String) {
@@ -28,17 +32,34 @@ export default function ProductTemplate(props) {
   const { getProductById } = React.useContext(CartContext);
   const [product, setProduct] = React.useState(null);
   const [selectedVariant, setSelectedVariant] = React.useState(null);
+  const { search, origin, pathname } = useLocation();
+  const variantId = queryString.parse(search).variant;
 
   React.useEffect(() => {
     getProductById(props.data.shopifyProduct.shopifyId).then(result => {
       setProduct(result);
-      setSelectedVariant(result.variants[0]);
+      setSelectedVariant(
+        result.variants.find(({ id }) => id === variantId) 
+        || result.variants[0]
+      );
     });
-  }, [getProductById, setProduct, props.data.shopifyProduct.shopifyId]);
+  }, [
+    getProductById, 
+    setProduct, 
+    props.data.shopifyProduct.shopifyId, 
+    variantId
+  ]);
 
   const handleVariantChange = (e) => {
-    setSelectedVariant(product?.variants.find(v => v.id === e.target.value));
-  }
+    const newVariant = product?.variants.find(v => v.id === e.target.value);
+    setSelectedVariant(newVariant);
+    navigate(
+      `${origin}${pathname}?variant=${encodeURIComponent(newVariant.id)}`,
+      {
+        replace: true
+      }
+    );
+  };
   
   return (
     <Layout>
@@ -47,11 +68,14 @@ export default function ProductTemplate(props) {
           <h1>{props.data.shopifyProduct.title}</h1>
           <p>{props.data.shopifyProduct.description}</p>
           {
-            product?.availableForSale && 
+            product?.availableForSale && Boolean(selectedVariant) &&
             <>
              <SelectWrapper>
                 <strong>Variant</strong>
-                <select onChange={handleVariantChange}>
+                <select 
+                  value={selectedVariant.id} 
+                  onChange={handleVariantChange}
+                >
                   {product?.variants.map(v => {
                     return (
                       <option key={v.id} value={v.id}>
@@ -60,7 +84,10 @@ export default function ProductTemplate(props) {
                     );
                   })}
                 </select>
-                {!!selectedVariant && <Price>${selectedVariant.price}</Price>}
+                {
+                  Boolean(selectedVariant) && 
+                  <Price>${selectedVariant.price}</Price>
+                }
               </SelectWrapper>
             </>
           }
