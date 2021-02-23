@@ -3,7 +3,7 @@ import { graphql, useStaticQuery } from 'gatsby';
 
 const query = graphql`
   {
-    allShopifyCollection {
+    allShopifyCollection(sort: {fields: title, order: ASC}) {
       edges {
         node {
           products {
@@ -11,6 +11,16 @@ const query = graphql`
           }
           title
           description
+          shopifyId
+          image {
+            localFile {
+              childImageSharp {
+                fluid(maxWidth: 1200) {
+                  ...GatsbyImageSharpFluid_withWebp
+                }
+              }
+            }
+          }
         }
       }
     }

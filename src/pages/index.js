@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, SEO } from 'components';
+import { Layout, SEO, HomepageCollectionsGrid } from 'components';
 import ProductContext from 'context/ProductContext';
 
 const IndexPage = () => {
@@ -8,6 +8,11 @@ const IndexPage = () => {
 
   return (
     <Layout>
+      <HomepageCollectionsGrid 
+        collections={collections.filter(
+          collection => collection.title!== 'Featured Hats'
+        )}
+      />
 
     </Layout>
   );
