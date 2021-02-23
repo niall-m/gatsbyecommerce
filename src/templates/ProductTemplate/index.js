@@ -70,31 +70,35 @@ export default function ProductTemplate(props) {
           {
             product?.availableForSale && Boolean(selectedVariant) &&
             <>
-             <SelectWrapper>
-                <strong>Variant</strong>
-                <select 
-                  value={selectedVariant.id} 
-                  onChange={handleVariantChange}
-                >
-                  {product?.variants.map(v => {
-                    return (
-                      <option key={v.id} value={v.id}>
-                        {v.title}
-                      </option>
-                    );
-                  })}
-                </select>
-                {
-                  Boolean(selectedVariant) && 
-                  <Price>${selectedVariant.price}</Price>
-                }
-              </SelectWrapper>
+              {product?.variants.length > 1 && (
+                <SelectWrapper>
+                  <strong>Variant</strong>
+                  <select 
+                    value={selectedVariant.id} 
+                    onChange={handleVariantChange}
+                  >
+                    {product?.variants.map(v => {
+                      return (
+                        <option key={v.id} value={v.id}>
+                          {v.title}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  {
+                    Boolean(selectedVariant) && 
+                    <Price>${selectedVariant.price}</Price>
+                  }
+                </SelectWrapper>
+              )}
             </>
           }
         </div>
 
         <div>
-          <ImageGallery images={props.data.shopifyProduct.images} />
+          <ImageGallery selectedVariantImageId={selectedVariant?.image.id}
+           images={props.data.shopifyProduct.images} 
+          />
         </div>
       </Grid>
     </Layout>
