@@ -10,7 +10,11 @@ export function Filters() {
     <FiltersWrapper>
       <strong>Categories</strong>
       {collections.map(collection => (
-        <CategoryFilterItem key={collection.shopifyId} title={collection.title} />
+        <CategoryFilterItem 
+          key={collection.shopifyId} 
+          title={collection.title} 
+          id={collection.shopifyId}
+        />
       ))}
     </FiltersWrapper>
   );
