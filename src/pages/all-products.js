@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Filters, ProductsGrid } from 'components';
+import { Layout, Filters, ProductsGrid, SEO } from 'components';
 import ProductContext from 'context/ProductContext';
 import styled from 'styled-components';
 import queryString from 'query-string';
@@ -67,6 +67,7 @@ export default function AllProducts() {
   
   return (
     <Layout>
+      <SEO title="MadHatter store all products" description="all products" />
       {Boolean(searchTerm) && Boolean(filteredProducts.length) &&
         <h3>Search term: <strong>'{searchTerm}'</strong></h3>
       }
