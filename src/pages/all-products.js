@@ -28,14 +28,11 @@ export default function AllProducts() {
   if (collections) {
     collections.forEach(collection => {
       collectionProductMap[collection.shopifyId] = {};
-
       collection.products.forEach(product => {
         collectionProductMap[collection.shopifyId][product.shopifyId] = true;
       });
     });
   }
-
-  console.log("collectionProductMap", collectionProductMap);
   
   const filterByCategory = (product) => {
     // return whether product matches category

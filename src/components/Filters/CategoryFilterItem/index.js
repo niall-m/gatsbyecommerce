@@ -9,6 +9,7 @@ export function CategoryFilterItem({ title, id }) {
   const qs = queryString.parse(search);
   const collectionIds = qs.c?.split(',').filter(c => Boolean(c)) || [];
   const checked = collectionIds?.find(cId => cId === id);
+  const searchTerm = qs.s;
 
   const onClick = () => {
     let baseUrl = '/all-products';
@@ -26,8 +27,12 @@ export function CategoryFilterItem({ title, id }) {
       newIds = collectionIds.map(cId => encodeURIComponent(cId));
     }
     
-    if (newIds.length) {
+    if (newIds.length && !searchTerm) {
       navigate(`${baseUrl}?c=${newIds.join(',')}`);
+    } else if (newIds.length && Boolean(searchTerm)) {
+      navigate(`${baseUrl}?c=${newIds.join(',')}&s=${encodeURIComponent(searchTerm)}`);
+    } else if (!newIds.length && Boolean(searchTerm)) {
+      navigate(`${baseUrl}?s=${encodeURIComponent(searchTerm)}`);
     } else {
       navigate(`${baseUrl}`);
     }

@@ -14,3 +14,4 @@ export * from './CartContents';
 export * from './Input';
 export * from './Button';
 export * from './Checkbox';
+export * from './Search';
