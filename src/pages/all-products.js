@@ -20,6 +20,7 @@ export default function AllProducts() {
   const selectedCollectionIds = qs.c?.split(',').filter(c => Boolean(c)) || [];
   // get collectionIds in URI, remove empty strings, default to array
   const selectedCollectionIdsMap = {};
+  const searchTerm = qs.s;
 
   selectedCollectionIds.forEach(collectionId => {
     selectedCollectionIdsMap[collectionId] = true;
@@ -49,17 +50,57 @@ export default function AllProducts() {
     // no selected categories, return each
     return true;
   };
+
+  const filterBySearchTerm = (product) => {
+    if (searchTerm) {
+      // if searchTerm exists and is part of title
+      return product.title.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0;
+    }
+
+    // else return all products
+    return true;
+  };
   
-  const filteredProducts = products.filter(filterByCategory);
+  const filteredProducts = products
+    .filter(filterByCategory)
+    .filter(filterBySearchTerm);
   
   return (
     <Layout>
-      <h4>{filteredProducts.length} products</h4>
+      {Boolean(searchTerm) && Boolean(filteredProducts.length) &&
+        <h3>Search term: <strong>'{searchTerm}'</strong></h3>
+      }
+      {Boolean(filteredProducts.length) &&
+        <h4>{filteredProducts.length} products</h4>
+      }
       <Content>
         <Filters />
-        <div>
-          <ProductsGrid products={filteredProducts} />
-        </div>
+        {!filteredProducts.length &&
+          <div>
+            <h3>
+              <span>Oh no! Nothing matches</span>
+              &nbsp;
+              <strong>
+                '{searchTerm}'
+              </strong>
+            </h3>
+            <div>
+              To help with your search, why not try:
+              <br />
+              <br />
+              <ul>
+                <li>Checking your spelling</li>
+                <li>Using less words</li>
+                <li>Try using a different search term</li>
+              </ul>
+            </div>
+          </div>
+        }
+        {Boolean(filteredProducts.length) &&
+          <div>
+            <ProductsGrid products={filteredProducts} />
+          </div>
+        }
       </Content>
     </Layout>
   );
