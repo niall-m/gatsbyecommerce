@@ -10,6 +10,9 @@ export function ProductsGrid({ products }) {
           key={product.shopifyId} 
           title={product.title} 
           imageFluid={product.images[0].localFile.childImageSharp.fluid}
+          description={product.description}
+          minPrice={product.priceRange.minVariantPrice.amount}
+          handle={product.handle}
         />
       ))}
     </ProductsGridWrapper>
